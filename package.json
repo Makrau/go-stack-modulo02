@@ -1,0 +1,11 @@
+{
+  "name": "go-stack-modulo02",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:Makrau/go-stack-modulo02.git",
+  "author": "makrau <iago006@hotmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
