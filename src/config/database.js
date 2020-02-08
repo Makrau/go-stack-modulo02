@@ -1,4 +1,4 @@
-import appConfig from './app';
+const appConfig = require('./app');
 
 const { host, username, password, name } = appConfig.database;
 
