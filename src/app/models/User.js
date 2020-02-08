@@ -1,5 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 import bcrypt from 'bcryptjs';
+import uuid from 'uuid/v4';
 
 class User extends Model {
   static init(sequelize) {
@@ -22,6 +23,10 @@ class User extends Model {
       }
 
       return this;
+    });
+
+    this.addHook('beforeCreate', user => {
+      user.id = uuid();
     });
   }
 
