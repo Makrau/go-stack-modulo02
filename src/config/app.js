@@ -10,4 +10,8 @@ module.exports = {
     name: process.env.DATABASE_NAME,
     host: process.env.DATABASE_HOST,
   },
+  auth: {
+    secret: process.env.API_KEY,
+    expiresIn: process.env.TOKEN_EXPIRES_IN,
+  },
 };
