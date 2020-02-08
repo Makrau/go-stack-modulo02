@@ -1,12 +1,22 @@
 {
-  "extends": "airbnb-base",
+  "extends": ["airbnb-base", "prettier"],
   "env": {
     "es6": true,
     "node": true,
     "jest": true
   },
+  "plugins": ["prettier"],
   "rules": {
+    "prettier/prettier": "error",
     "import/no-named-as-default-member": "off",
-    "import/extensions": "off"
+    "import/extensions": "off",
+    "class-methods-use-this": "off",
+    "no-param-reassign": "off",
+    "camelcase": "off",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "next"}]
+  },
+  "parserOptions": {
+    "ecmaVersion": 2019,
+    "sourceType": "module"
   }
 }
