@@ -6,7 +6,7 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
       },
-      data: {
+      date: {
         allowNull: false,
         type: Sequelize.DATE,
       },
@@ -20,7 +20,7 @@ module.exports = {
         onDelete: 'SET NULL',
         allowNull: true,
       },
-      providers_id: {
+      provider_id: {
         type: Sequelize.UUID,
         references: {
           model: 'users',
