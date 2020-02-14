@@ -26,20 +26,24 @@ export const checkHasAppointment = async (provider_id, date) => {
   }
 };
 
-export const createAppointmentValidation = async requestBody => {
+export const createAppointmentValidation = async request => {
   const schema = Yup.object().shape({
     date: Yup.date().required(),
     provider_id: Yup.string().required(),
   });
 
-  if (!(await schema.isValid(requestBody))) {
+  if (!(await schema.isValid(request.body))) {
     throw new Error('invalid request body structure');
   }
 
-  const { date, provider_id } = requestBody;
+  const { date, provider_id } = request.body;
 
   checkPastDate(date);
   await checkHasAppointment(provider_id, date);
+
+  if (provider_id === request.userId) {
+    throw new Error('cannot make an appointment with yourself');
+  }
 };
 
 export default {

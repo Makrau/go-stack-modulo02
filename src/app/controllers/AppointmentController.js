@@ -5,6 +5,7 @@ import Appointment from '../models/Appointment';
 import User from '../models/User';
 import File from '../models/File';
 import Notification from '../schemas/Notification';
+import { checkIsProvider } from '../helpers/verifications/user';
 
 class AppointmentController {
   async index(req, res) {
@@ -40,17 +41,11 @@ class AppointmentController {
 
   async store(req, res) {
     try {
-      await createAppointmentValidation(req.body);
+      await createAppointmentValidation(req);
 
       const { provider_id, date } = req.body;
-      const isProvider = await User.findOne({
-        where: {
-          id: provider_id,
-          provider: true,
-        },
-      });
 
-      if (!isProvider) {
+      if (!(await checkIsProvider(provider_id))) {
         return res.status(400).json({ error: 'provider_id is not a provider' });
       }
 
