@@ -8,6 +8,7 @@ import ProviderController from './app/controllers/ProviderController';
 import AppointmentController from './app/controllers/AppointmentController';
 
 import auth from './app/middlewares/auth';
+import ScheduleController from './app/controllers/ScheduleController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -23,5 +24,6 @@ routes.get('/providers', auth, ProviderController.index);
 
 routes.get('/appointments', auth, AppointmentController.index);
 routes.post('/appointments', auth, AppointmentController.store);
+routes.get('/schedules', auth, ScheduleController.index);
 
 export default routes;
