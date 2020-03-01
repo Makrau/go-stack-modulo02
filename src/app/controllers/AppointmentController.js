@@ -7,7 +7,8 @@ import File from '../models/File';
 import Notification from '../schemas/Notification';
 import { checkIsProvider } from '../helpers/verifications/user';
 
-import Mail from '../../lib/Mail';
+import CancellationMailJob from '../jobs/CancellationMail';
+import Queue from '../../lib/Queue';
 
 class AppointmentController {
   async index(req, res) {
@@ -86,12 +87,23 @@ class AppointmentController {
             as: 'provider',
             attributes: ['name', 'email'],
           },
+          {
+            model: User,
+            as: 'user',
+            attributes: ['name'],
+          },
         ],
       });
 
       if (appointment.user_id !== req.userId) {
         return res.status(401).json({
           error: "You don't have permission to cancel this appointment",
+        });
+      }
+
+      if (appointment.canceled_at) {
+        return res.status(400).json({
+          error: 'This appointment has already been canceled',
         });
       }
 
@@ -107,10 +119,8 @@ class AppointmentController {
 
       await appointment.save();
 
-      await Mail.sendMail({
-        to: `${appointment.provider.name} <${appointment.provider.email}>`,
-        subject: 'Agendamento cancelado',
-        text: 'Você tem um novo cancelamento',
+      await Queue.add(CancellationMailJob.key, {
+        appointment,
       });
 
       return res.json(appointment);
