@@ -1,12 +1,13 @@
 import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore } from 'date-fns';
 import Appointment from '../models/Appointment';
+import RequestError from '../errors/RequestError';
 
 export const checkPastDate = date => {
   const hourStart = startOfHour(parseISO(date));
 
   if (isBefore(hourStart, new Date())) {
-    throw new Error('Past dates are not permitted');
+    throw new RequestError('Past dates are not permitted');
   }
 };
 
@@ -22,7 +23,7 @@ export const checkHasAppointment = async (provider_id, date) => {
   });
 
   if (hasAppointment) {
-    throw new Error('Appointment date not available');
+    throw new RequestError('Appointment date not available');
   }
 };
 
@@ -33,7 +34,7 @@ export const createAppointmentValidation = async request => {
   });
 
   if (!(await schema.isValid(request.body))) {
-    throw new Error('invalid request body structure');
+    throw new RequestError('invalid request body structure');
   }
 
   const { date, provider_id } = request.body;
@@ -42,7 +43,7 @@ export const createAppointmentValidation = async request => {
   await checkHasAppointment(provider_id, date);
 
   if (provider_id === request.userId) {
-    throw new Error('cannot make an appointment with yourself');
+    throw new RequestError('cannot make an appointment with yourself');
   }
 };
 

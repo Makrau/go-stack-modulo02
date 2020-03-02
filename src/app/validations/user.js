@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
 import User from '../models/User';
+import RequestError from '../errors/RequestError';
+import AuthenticationError from '../errors/AuthenticationError';
 
 const checkEmailExists = async email => {
   const emailExists = await User.findOne({
@@ -7,7 +9,7 @@ const checkEmailExists = async email => {
   });
 
   if (emailExists) {
-    throw new Error('Email already exists');
+    throw new RequestError('Email already exists');
   }
 };
 
@@ -15,7 +17,7 @@ export const checkUserExists = async userId => {
   const user = await User.findByPk(userId);
 
   if (!user) {
-    throw new Error('User not found');
+    throw new RequestError('User not found');
   }
 
   return user;
@@ -33,7 +35,7 @@ const checkCreateUserSchema = async requestBody => {
   });
 
   if (!(await schema.isValid(requestBody))) {
-    throw new Error('Invalid request body structure');
+    throw new RequestError('Invalid request body structure');
   }
 };
 
@@ -53,25 +55,19 @@ const checkUpdateUserSchema = async requestBody => {
   });
 
   if (!(await schema.isValid(requestBody))) {
-    throw new Error('Invalid request body structure');
+    throw new RequestError('Invalid request body structure');
   }
 };
 
 const checkChangePassword = async (oldPassword, password, user) => {
-  let error;
-
   if (!oldPassword && password) {
-    error = new Error(
+    throw new AuthenticationError(
       'Cannot change password without passing the previous password'
     );
-    error.code = 401;
-    throw error;
   }
 
   if (oldPassword && !(await user.checkPassword(oldPassword))) {
-    error = new Error('Password does not match');
-    error.code = 401;
-    throw error;
+    throw new AuthenticationError('Password does not match');
   }
 };
 
